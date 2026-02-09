@@ -194,24 +194,15 @@ body {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  min-width: 0;
 }
 
-.app-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+.brand-logo {
+  display: block;
+  width: 164px;
+  max-width: 55vw;
+  height: auto;
 }
-
-.app-title {
-  font-size: 20px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #6366f1, #22d3ee);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .header-right {
   display: flex;
   align-items: center;
