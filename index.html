@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>FastPilot - Intermittent Fasting Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Splash / Onboarding -->
+    <div id="onboarding-screen" class="screen active">
+      <div class="onboarding-content">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="32" cy="32" r="28" stroke="url(#grad1)" stroke-width="4"/>
+              <path d="M32 8 L32 32 L48 44" stroke="url(#grad1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="grad1" x1="0" y1="0" x2="64" y2="64">
+                  <stop offset="0%" stop-color="#6366f1"/>
+                  <stop offset="100%" stop-color="#22d3ee"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h1>FastPilot</h1>
+          <p class="tagline">Your intelligent fasting companion</p>
+        </div>
+        <div class="onboarding-steps">
+          <div class="step active" data-step="1">
+            <h2>Choose Your Fasting Method</h2>
+            <p>Select from 14+ scientifically-backed intermittent fasting protocols</p>
+            <div id="method-selector" class="method-grid"></div>
+          </div>
+          <div class="step" data-step="2">
+            <h2>Set Your Schedule</h2>
+            <p>When do you typically start your fast?</p>
+            <div class="time-picker-group">
+              <label>Preferred fast start time</label>
+              <input type="time" id="preferred-start-time" value="20:00" class="time-input">
+            </div>
+            <div class="goal-setting">
+              <label>Weekly fasting goal (days)</label>
+              <div class="goal-slider-container">
+                <input type="range" id="weekly-goal" min="1" max="7" value="5" class="goal-slider">
+                <span id="goal-display" class="goal-value">5 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="onboarding-nav">
+          <button id="onboarding-back" class="btn btn-ghost" style="display:none;">Back</button>
+          <button id="onboarding-next" class="btn btn-primary">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="screen">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <h1 class="app-title">FastPilot</h1>
+        </div>
+        <div class="header-right">
+          <button id="settings-btn" class="icon-btn" aria-label="Settings">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Tab Content Areas -->
+      <main class="tab-content-area">
+        <!-- Timer Tab -->
+        <div id="tab-timer" class="tab-panel active">
+          <div class="timer-container">
+            <button class="current-method-badge" id="current-method-badge">
+              <span id="badge-method-name">16:8</span>
+              <svg class="badge-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="method-quick-picker" class="method-quick-picker hidden">
+              <div class="quick-picker-header">
+                <h3>Switch Method</h3>
+                <button id="close-quick-picker" class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+              <div id="quick-picker-list" class="quick-picker-list"></div>
+            </div>
+            <div id="quick-picker-overlay" class="quick-picker-overlay hidden"></div>
+            <div class="timer-ring-container">
+              <svg class="timer-ring" viewBox="0 0 260 260">
+                <defs>
+                  <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1"/>
+                    <stop offset="50%" stop-color="#8b5cf6"/>
+                    <stop offset="100%" stop-color="#22d3ee"/>
+                  </linearGradient>
+                  <linearGradient id="timerGradBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1e293b"/>
+                    <stop offset="100%" stop-color="#334155"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="130" cy="130" r="120" stroke="url(#timerGradBg)" stroke-width="10" fill="none"/>
+                <circle id="timer-progress" cx="130" cy="130" r="120" stroke="url(#timerGrad)" stroke-width="10" fill="none"
+                        stroke-dasharray="753.98" stroke-dashoffset="753.98" stroke-linecap="round"
+                        transform="rotate(-90 130 130)"/>
+              </svg>
+              <div class="timer-center">
+                <div class="timer-state" id="timer-state">Ready to fast</div>
+                <div class="timer-display" id="timer-display">00:00:00</div>
+                <div class="timer-subtitle" id="timer-subtitle">Tap Start to begin</div>
+              </div>
+            </div>
+
+            <div class="timer-phases" id="timer-phases">
+              <div class="phase" data-hours="0">
+                <div class="phase-icon">&#x1F525;</div>
+                <div class="phase-label">Anabolic</div>
+                <div class="phase-time">0-4h</div>
+              </div>
+              <div class="phase" data-hours="4">
+                <div class="phase-icon">&#x26A1;</div>
+                <div class="phase-label">Catabolic</div>
+                <div class="phase-time">4-8h</div>
+              </div>
+              <div class="phase" data-hours="8">
+                <div class="phase-icon">&#x1F50B;</div>
+                <div class="phase-label">Fat Burning</div>
+                <div class="phase-time">8-12h</div>
+              </div>
+              <div class="phase" data-hours="12">
+                <div class="phase-icon">&#x2728;</div>
+                <div class="phase-label">Ketosis</div>
+                <div class="phase-time">12-18h</div>
+              </div>
+              <div class="phase" data-hours="18">
+                <div class="phase-icon">&#x267B;&#xFE0F;</div>
+                <div class="phase-label">Autophagy</div>
+                <div class="phase-time">18-24h</div>
+              </div>
+              <div class="phase" data-hours="24">
+                <div class="phase-icon">&#x1F9EC;</div>
+                <div class="phase-label">Deep Repair</div>
+                <div class="phase-time">24h+</div>
+              </div>
+            </div>
+
+            <div class="timer-actions">
+              <button id="btn-start-fast" class="btn btn-primary btn-large">Start Fast</button>
+              <button id="btn-end-fast" class="btn btn-danger btn-large" style="display:none;">End Fast</button>
+              <button id="btn-cancel-fast" class="btn btn-ghost" style="display:none;">Cancel</button>
+            </div>
+
+            <div class="quick-stats">
+              <div class="quick-stat">
+                <span class="stat-value" id="stat-streak">0</span>
+                <span class="stat-label">Day Streak</span>
+              </div>
+              <div class="quick-stat">
+                <span class="stat-value" id="stat-total-fasts">0</span>
+                <span class="stat-label">Total Fasts</span>
+              </div>
+              <div class="quick-stat">
+                <span class="stat-value" id="stat-avg-duration">0h</span>
+                <span class="stat-label">Avg Duration</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div id="tab-calendar" class="tab-panel">
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button id="cal-prev" class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <h2 id="cal-month-year"></h2>
+              <button id="cal-next" class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+            <div class="calendar-weekdays">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div id="calendar-grid" class="calendar-grid"></div>
+            <div id="day-detail-panel" class="day-detail-panel hidden">
+              <div class="day-detail-header">
+                <h3 id="day-detail-date"></h3>
+                <button id="close-day-detail" class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+              <div id="day-detail-content" class="day-detail-content"></div>
+              <button id="btn-add-manual" class="btn btn-ghost btn-small">+ Add Manual Entry</button>
+            </div>
+            <div class="calendar-legend">
+              <div class="legend-item"><span class="legend-dot completed"></span> Completed</div>
+              <div class="legend-item"><span class="legend-dot partial"></span> Partial</div>
+              <div class="legend-item"><span class="legend-dot missed"></span> Missed Goal</div>
+            </div>
+            <div class="monthly-summary" id="monthly-summary"></div>
+          </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="tab-analytics" class="tab-panel">
+          <div class="analytics-container">
+            <div class="analytics-period-selector">
+              <button class="period-btn active" data-period="week">Week</button>
+              <button class="period-btn" data-period="month">Month</button>
+              <button class="period-btn" data-period="quarter">3 Months</button>
+              <button class="period-btn" data-period="year">Year</button>
+              <button class="period-btn" data-period="all">All</button>
+            </div>
+
+            <div class="analytics-cards">
+              <div class="analytics-card highlight-card">
+                <div class="card-header">
+                  <h3>Fasting Score</h3>
+                  <span class="info-tooltip" data-tip="Composite score based on consistency, duration accuracy, and streak">?</span>
+                </div>
+                <div class="score-display">
+                  <svg class="score-ring" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52" stroke="#1e293b" stroke-width="8" fill="none"/>
+                    <circle id="score-progress" cx="60" cy="60" r="52" stroke="url(#timerGrad)" stroke-width="8" fill="none"
+                            stroke-dasharray="326.73" stroke-dashoffset="326.73" stroke-linecap="round"
+                            transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <span class="score-value" id="fasting-score">0</span>
+                </div>
+              </div>
+
+              <div class="analytics-card">
+                <h3>Total Hours Fasted</h3>
+                <div class="big-number" id="total-hours">0</div>
+              </div>
+              <div class="analytics-card">
+                <h3>Completion Rate</h3>
+                <div class="big-number" id="completion-rate">0%</div>
+              </div>
+              <div class="analytics-card">
+                <h3>Longest Fast</h3>
+                <div class="big-number" id="longest-fast">0h</div>
+              </div>
+              <div class="analytics-card">
+                <h3>Current Streak</h3>
+                <div class="big-number" id="current-streak">0 days</div>
+              </div>
+              <div class="analytics-card">
+                <h3>Best Streak</h3>
+                <div class="big-number" id="best-streak">0 days</div>
+              </div>
+            </div>
+
+            <div class="chart-section">
+              <h3>Fasting Duration Over Time</h3>
+              <div class="chart-wrapper">
+                <canvas id="duration-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-section">
+              <h3>Weekly Consistency</h3>
+              <div class="chart-wrapper">
+                <canvas id="consistency-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-section">
+              <h3>Fasting Hours by Day of Week</h3>
+              <div class="chart-wrapper">
+                <canvas id="day-of-week-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-section">
+              <h3>Method Distribution</h3>
+              <div class="chart-wrapper chart-wrapper-short">
+                <canvas id="method-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-section">
+              <h3>Start Time Distribution</h3>
+              <div class="chart-wrapper">
+                <canvas id="start-time-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card milestones-card">
+              <h3>Milestones</h3>
+              <div id="milestones-list" class="milestones-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="tab-history" class="tab-panel">
+          <div class="history-container">
+            <div class="history-header">
+              <h2>Fasting History</h2>
+              <div class="history-filters">
+                <select id="history-filter-method" class="select-input">
+                  <option value="all">All Methods</option>
+                </select>
+                <select id="history-filter-status" class="select-input">
+                  <option value="all">All Status</option>
+                  <option value="completed">Completed</option>
+                  <option value="partial">Partial</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+            <div id="history-list" class="history-list"></div>
+            <div id="history-empty" class="empty-state">
+              <p>No fasts recorded yet. Start your first fast!</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="timer">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Timer</span>
+        </button>
+        <button class="nav-item" data-tab="calendar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendar</span>
+        </button>
+        <button class="nav-item" data-tab="analytics">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <span>Analytics</span>
+        </button>
+        <button class="nav-item" data-tab="history">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>History</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button id="close-settings" class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <h3>Fasting Method</h3>
+            <select id="setting-method" class="select-input"></select>
+            <div id="method-description" class="method-desc"></div>
+          </div>
+          <div class="setting-group">
+            <h3>Default Start Time</h3>
+            <input type="time" id="setting-start-time" class="time-input">
+          </div>
+          <div class="setting-group">
+            <h3>Weekly Goal</h3>
+            <div class="goal-slider-container">
+              <input type="range" id="setting-weekly-goal" min="1" max="7" value="5" class="goal-slider">
+              <span id="setting-goal-display" class="goal-value">5 days</span>
+            </div>
+          </div>
+          <div class="setting-group">
+            <h3>Notifications</h3>
+            <label class="toggle-label">
+              <input type="checkbox" id="setting-notifications" class="toggle-input">
+              <span class="toggle-switch"></span>
+              <span>Enable reminders</span>
+            </label>
+          </div>
+          <div class="setting-group">
+            <h3>Data</h3>
+            <button id="btn-export" class="btn btn-ghost btn-small">Export Data (JSON)</button>
+            <button id="btn-import" class="btn btn-ghost btn-small">Import Data</button>
+            <input type="file" id="import-file" accept=".json" style="display:none;">
+            <button id="btn-clear-data" class="btn btn-danger btn-small">Clear All Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual Entry Modal -->
+    <div id="manual-entry-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Add Manual Entry</h2>
+          <button id="close-manual-entry" class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label>Method</label>
+            <select id="manual-method" class="select-input"></select>
+          </div>
+          <div class="setting-group">
+            <label>Start Date & Time</label>
+            <input type="datetime-local" id="manual-start" class="time-input">
+          </div>
+          <div class="setting-group">
+            <label>End Date & Time</label>
+            <input type="datetime-local" id="manual-end" class="time-input">
+          </div>
+          <div class="setting-group">
+            <label>Notes (optional)</label>
+            <textarea id="manual-notes" class="text-input" rows="3" placeholder="How did you feel?"></textarea>
+          </div>
+          <button id="btn-save-manual" class="btn btn-primary">Save Entry</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="js/methods.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
