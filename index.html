@@ -15,54 +15,6 @@
 </head>
 <body>
   <div id="app">
-    <!-- Splash / Onboarding -->
-    <div id="onboarding-screen" class="screen active">
-      <div class="onboarding-content">
-        <div class="logo-area">
-          <div class="logo-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="32" r="28" stroke="url(#grad1)" stroke-width="4"/>
-              <path d="M32 8 L32 32 L48 44" stroke="url(#grad1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <defs>
-                <linearGradient id="grad1" x1="0" y1="0" x2="64" y2="64">
-                  <stop offset="0%" stop-color="#6366f1"/>
-                  <stop offset="100%" stop-color="#22d3ee"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <h1>FastPilot</h1>
-          <p class="tagline">Your intelligent fasting companion</p>
-        </div>
-        <div class="onboarding-steps">
-          <div class="step active" data-step="1">
-            <h2>Choose Your Fasting Method</h2>
-            <p>Select from 14+ scientifically-backed intermittent fasting protocols</p>
-            <div id="method-selector" class="method-grid"></div>
-          </div>
-          <div class="step" data-step="2">
-            <h2>Set Your Schedule</h2>
-            <p>When do you typically start your fast?</p>
-            <div class="time-picker-group">
-              <label>Preferred fast start time</label>
-              <input type="time" id="preferred-start-time" value="20:00" class="time-input">
-            </div>
-            <div class="goal-setting">
-              <label>Weekly fasting goal (days)</label>
-              <div class="goal-slider-container">
-                <input type="range" id="weekly-goal" min="1" max="7" value="5" class="goal-slider">
-                <span id="goal-display" class="goal-value">5 days</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="onboarding-nav">
-          <button id="onboarding-back" class="btn btn-ghost" style="display:none;">Back</button>
-          <button id="onboarding-next" class="btn btn-primary">Continue</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Main App -->
     <div id="main-app" class="screen">
       <!-- Header -->
@@ -85,16 +37,18 @@
         <!-- Timer Tab -->
         <div id="tab-timer" class="tab-panel active">
           <div class="timer-container">
-            <button class="current-method-badge" id="current-method-badge">
-              <span id="badge-method-name">16:8</span>
-              <svg class="badge-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div id="method-quick-picker" class="method-quick-picker hidden">
-              <div class="quick-picker-header">
-                <h3>Switch Method</h3>
-                <button id="close-quick-picker" class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            <div class="method-badge-wrapper">
+              <button class="current-method-badge" id="current-method-badge">
+                <span id="badge-method-name">16:8</span>
+                <svg class="badge-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div id="method-quick-picker" class="method-quick-picker hidden">
+                <div class="quick-picker-header">
+                  <h3>Switch Method</h3>
+                  <button id="close-quick-picker" class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                </div>
+                <div id="quick-picker-list" class="quick-picker-list"></div>
               </div>
-              <div id="quick-picker-list" class="quick-picker-list"></div>
             </div>
             <div id="quick-picker-overlay" class="quick-picker-overlay hidden"></div>
             <div id="method-info-card" class="method-info-card">
