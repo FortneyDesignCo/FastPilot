@@ -10,6 +10,7 @@ const Timer = {
       this.resumeFast();
     }
     this.updateQuickStats();
+    this.updateMethodInfo();
   },
 
   bindEvents() {
@@ -79,9 +80,27 @@ const Timer = {
         const method = getMethodById(methodId);
         document.getElementById('badge-method-name').textContent = method.name;
         this.closeQuickPicker();
+        this.updateMethodInfo();
         this.showToast(`Switched to ${method.name} (${method.subtitle})`, 'info');
       });
     });
+  },
+
+  updateMethodInfo() {
+    const settings = Storage.getSettings();
+    const method = getMethodById(settings.methodId);
+
+    document.getElementById('method-info-icon').textContent = method.icon;
+    document.getElementById('method-info-name').textContent = `${method.name} - ${method.subtitle}`;
+    document.getElementById('method-info-schedule').textContent =
+      method.eatHours > 0
+        ? `${method.fastHours}h fasting \u00B7 ${method.eatHours}h eating window`
+        : `${method.fastHours}h fast`;
+    document.getElementById('method-info-desc').textContent = method.description;
+
+    const diffEl = document.getElementById('method-info-difficulty');
+    diffEl.textContent = method.difficulty;
+    diffEl.className = 'method-info-difficulty ' + method.difficulty.toLowerCase();
   },
 
   startFast() {
