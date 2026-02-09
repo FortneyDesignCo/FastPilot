@@ -358,6 +358,12 @@ body {
   background-clip: text;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* ========== Tab Content ========== */
 .tab-content-area {
   flex: 1;
@@ -550,6 +556,77 @@ body {
   font-weight: 700;
   font-size: 16px;
   flex-shrink: 0;
+}
+
+/* Method Info Card */
+.method-info-card {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.25s ease;
+}
+
+.method-info-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.method-info-icon {
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.method-info-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.method-info-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.method-info-schedule {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.method-info-difficulty {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.method-info-difficulty.beginner { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+.method-info-difficulty.intermediate { background: rgba(251, 146, 60, 0.2); color: #fb923c; }
+.method-info-difficulty.advanced { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+.method-info-difficulty.expert { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+.method-info-difficulty.any { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+
+.method-info-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
 }
 
 .timer-ring-container {
