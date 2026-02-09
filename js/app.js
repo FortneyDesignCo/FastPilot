@@ -1,100 +1,13 @@
 // Main App controller
 const App = {
   currentTab: 'timer',
-  onboardingStep: 1,
-  selectedMethodId: '16-8',
 
   init() {
-    if (Storage.isOnboarded()) {
-      this.showMainApp();
-    } else {
-      this.showOnboarding();
-    }
-  },
-
-  // Onboarding
-  showOnboarding() {
-    document.getElementById('onboarding-screen').classList.add('active');
-    document.getElementById('main-app').classList.remove('active');
-    this.renderMethodSelector();
-    this.bindOnboarding();
-  },
-
-  renderMethodSelector() {
-    const container = document.getElementById('method-selector');
-    const categories = getMethodCategories();
-
-    let html = '';
-    Object.entries(categories).forEach(([key, cat]) => {
-      html += `<div class="method-category"><h3>${cat.label}</h3><div class="method-cards">`;
-      cat.methods.forEach(method => {
-        html += `
-          <button class="method-card ${method.id === this.selectedMethodId ? 'selected' : ''}"
-                  data-method="${method.id}">
-            <span class="method-icon">${method.icon}</span>
-            <span class="method-name">${method.name}</span>
-            <span class="method-subtitle">${method.subtitle}</span>
-            <span class="method-difficulty ${method.difficulty.toLowerCase()}">${method.difficulty}</span>
-          </button>
-        `;
-      });
-      html += '</div></div>';
-    });
-
-    container.innerHTML = html;
-
-    container.querySelectorAll('.method-card').forEach(card => {
-      card.addEventListener('click', () => {
-        container.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        this.selectedMethodId = card.dataset.method;
-      });
-    });
-  },
-
-  bindOnboarding() {
-    const nextBtn = document.getElementById('onboarding-next');
-    const backBtn = document.getElementById('onboarding-back');
-    const goalSlider = document.getElementById('weekly-goal');
-    const goalDisplay = document.getElementById('goal-display');
-
-    goalSlider.addEventListener('input', () => {
-      goalDisplay.textContent = goalSlider.value + ' days';
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (this.onboardingStep === 1) {
-        this.onboardingStep = 2;
-        document.querySelector('.step[data-step="1"]').classList.remove('active');
-        document.querySelector('.step[data-step="2"]').classList.add('active');
-        backBtn.style.display = '';
-        nextBtn.textContent = 'Start Fasting';
-      } else {
-        // Save settings
-        const settings = {
-          methodId: this.selectedMethodId,
-          startTime: document.getElementById('preferred-start-time').value,
-          weeklyGoal: parseInt(document.getElementById('weekly-goal').value),
-          notifications: false
-        };
-        Storage.saveSettings(settings);
-        Storage.setOnboarded();
-        this.showMainApp();
-      }
-    });
-
-    backBtn.addEventListener('click', () => {
-      this.onboardingStep = 1;
-      document.querySelector('.step[data-step="2"]').classList.remove('active');
-      document.querySelector('.step[data-step="1"]').classList.add('active');
-      backBtn.style.display = 'none';
-      nextBtn.textContent = 'Continue';
-    });
+    this.showMainApp();
   },
 
   // Main App
   showMainApp() {
-    document.getElementById('onboarding-screen').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
 
     this.bindNavigation();
