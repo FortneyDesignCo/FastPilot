@@ -83,15 +83,6 @@ const Storage = {
     }
   },
 
-  // Onboarding
-  isOnboarded() {
-    return localStorage.getItem(STORAGE_KEYS.ONBOARDED) === 'true';
-  },
-
-  setOnboarded() {
-    localStorage.setItem(STORAGE_KEYS.ONBOARDED, 'true');
-  },
-
   // Export / Import
   exportData() {
     const data = {
