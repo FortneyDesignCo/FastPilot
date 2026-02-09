@@ -119,6 +119,11 @@ const App = {
         this.switchTab(tab);
       });
     });
+
+    // Home button - navigates to Timer tab
+    document.getElementById('home-btn').addEventListener('click', () => {
+      this.switchTab('timer');
+    });
   },
 
   switchTab(tab) {
@@ -236,6 +241,7 @@ const App = {
     const method = getMethodById(settings.methodId);
     if (!Timer.activeFast) {
       document.getElementById('badge-method-name').textContent = method.name;
+      Timer.updateMethodInfo();
     }
   },
 
