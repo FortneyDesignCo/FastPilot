@@ -8,6 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>FastPilot - Intermittent Fasting Tracker</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -20,6 +22,7 @@
       <!-- Header -->
       <header class="app-header">
         <div class="header-left">
+          <img src="icons/apple-touch-icon-180x180.png" alt="FastPilot" class="app-logo">
           <h1 class="app-title">FastPilot</h1>
         </div>
         <div class="header-right">
@@ -381,6 +384,22 @@
           </div>
           <button id="btn-save-manual" class="btn btn-primary">Save Entry</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Phase Info Popup -->
+    <div id="phase-info-popup" class="phase-info-popup hidden">
+      <div class="phase-info-overlay"></div>
+      <div class="phase-info-card">
+        <div class="phase-info-header">
+          <span class="phase-info-icon" id="phase-info-icon"></span>
+          <div class="phase-info-title-group">
+            <h3 id="phase-info-title"></h3>
+            <span class="phase-info-time" id="phase-info-time"></span>
+          </div>
+          <button id="close-phase-info" class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <p class="phase-info-desc" id="phase-info-desc"></p>
       </div>
     </div>
 

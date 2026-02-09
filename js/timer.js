@@ -1,4 +1,37 @@
 // Timer module - handles fasting timer logic
+const PHASE_DESCRIPTIONS = {
+  '0': {
+    title: 'Anabolic Phase',
+    time: '0-4 hours',
+    description: 'Your body is still digesting and absorbing nutrients from your last meal. Blood sugar and insulin levels are elevated as your body processes food into energy. Glycogen stores in the liver and muscles are being replenished. This is the building phase where your body uses available nutrients for growth and repair.'
+  },
+  '4': {
+    title: 'Catabolic Phase',
+    time: '4-8 hours',
+    description: 'Your body transitions from the fed state to the fasting state. Insulin levels begin to drop and your body starts breaking down glycogen (stored glucose) for energy. Blood sugar stabilizes and growth hormone levels start to rise. Your digestive system gets a chance to rest and reset.'
+  },
+  '8': {
+    title: 'Fat Burning Phase',
+    time: '8-12 hours',
+    description: 'Glycogen stores are becoming depleted and your body increasingly shifts to burning fat for fuel. Insulin levels are now low, which unlocks fat cells to release stored fatty acids. Your metabolic rate may slightly increase as your body becomes more efficient at using fat as its primary energy source.'
+  },
+  '12': {
+    title: 'Ketosis',
+    time: '12-18 hours',
+    description: 'Your body enters a state of ketosis where the liver converts fatty acids into ketone bodies, an alternative fuel source for the brain and body. Mental clarity often improves as the brain efficiently uses ketones. Inflammation markers begin to decrease and cellular repair processes accelerate.'
+  },
+  '18': {
+    title: 'Autophagy',
+    time: '18-24 hours',
+    description: 'Autophagy ("self-eating") kicks into high gear. Your cells begin breaking down and recycling damaged components, misfolded proteins, and dysfunctional organelles. This powerful cellular cleanup process is linked to longevity, reduced inflammation, and protection against diseases. Growth hormone levels surge significantly.'
+  },
+  '24': {
+    title: 'Deep Repair',
+    time: '24+ hours',
+    description: 'Your body enters a deep state of cellular repair and regeneration. Autophagy reaches its peak, clearing out old and damaged cells to make way for new, healthy ones. Stem cell production may increase, supporting immune system renewal. Insulin sensitivity improves dramatically. This phase offers the most profound benefits for cellular health and longevity.'
+  }
+};
+
 const Timer = {
   interval: null,
   activeFast: null,
@@ -22,6 +55,13 @@ const Timer = {
     document.getElementById('current-method-badge').addEventListener('click', () => this.toggleQuickPicker());
     document.getElementById('close-quick-picker').addEventListener('click', () => this.closeQuickPicker());
     document.getElementById('quick-picker-overlay').addEventListener('click', () => this.closeQuickPicker());
+
+    // Phase info popups
+    document.querySelectorAll('#timer-phases .phase').forEach(phase => {
+      phase.addEventListener('click', () => this.showPhaseInfo(phase));
+    });
+    document.getElementById('close-phase-info').addEventListener('click', () => this.closePhaseInfo());
+    document.querySelector('.phase-info-overlay').addEventListener('click', () => this.closePhaseInfo());
   },
 
   toggleQuickPicker() {
@@ -304,5 +344,22 @@ const Timer = {
     const container = document.querySelector('.timer-container');
     container.classList.add('celebrate');
     setTimeout(() => container.classList.remove('celebrate'), 2000);
+  },
+
+  showPhaseInfo(phaseEl) {
+    const hours = phaseEl.dataset.hours;
+    const info = PHASE_DESCRIPTIONS[hours];
+    if (!info) return;
+
+    const icon = phaseEl.querySelector('.phase-icon').textContent;
+    document.getElementById('phase-info-icon').textContent = icon;
+    document.getElementById('phase-info-title').textContent = info.title;
+    document.getElementById('phase-info-time').textContent = info.time;
+    document.getElementById('phase-info-desc').textContent = info.description;
+    document.getElementById('phase-info-popup').classList.remove('hidden');
+  },
+
+  closePhaseInfo() {
+    document.getElementById('phase-info-popup').classList.add('hidden');
   }
 };
