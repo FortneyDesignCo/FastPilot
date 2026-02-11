@@ -144,8 +144,12 @@ const Storage = {
     return this.getFasts().filter(f => f.status === 'completed');
   },
 
+  getFinishedFasts() {
+    return this.getFasts().filter(f => f.status === 'completed' || f.status === 'partial');
+  },
+
   getStreak() {
-    const fasts = this.getCompletedFasts();
+    const fasts = this.getFinishedFasts();
     if (fasts.length === 0) return 0;
 
     const today = new Date();
@@ -182,7 +186,7 @@ const Storage = {
   },
 
   getBestStreak() {
-    const fasts = this.getCompletedFasts();
+    const fasts = this.getFinishedFasts();
     if (fasts.length === 0) return 0;
 
     const fastDates = [...new Set(fasts.map(f => {

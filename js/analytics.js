@@ -343,17 +343,17 @@ const Analytics = {
 
   renderMilestones(allFasts) {
     const container = document.getElementById('milestones-list');
-    const completed = allFasts.filter(f => f.status === 'completed');
+    const finished = allFasts.filter(f => f.status === 'completed' || f.status === 'partial');
     const totalHours = allFasts.reduce((s, f) => s + (f.actualHours || 0), 0);
     const bestStreak = Storage.getBestStreak();
 
     const milestones = [
       { icon: '\uD83C\uDF1F', label: 'First Fast', achieved: allFasts.length >= 1 },
-      { icon: '\uD83D\uDD25', label: '5 Fasts Completed', achieved: completed.length >= 5 },
-      { icon: '\uD83D\uDCAA', label: '10 Fasts Completed', achieved: completed.length >= 10 },
-      { icon: '\uD83C\uDFC6', label: '25 Fasts Completed', achieved: completed.length >= 25 },
-      { icon: '\uD83D\uDC8E', label: '50 Fasts Completed', achieved: completed.length >= 50 },
-      { icon: '\uD83D\uDE80', label: '100 Fasts Completed', achieved: completed.length >= 100 },
+      { icon: '\uD83D\uDD25', label: '5 Fasts Completed', achieved: finished.length >= 5 },
+      { icon: '\uD83D\uDCAA', label: '10 Fasts Completed', achieved: finished.length >= 10 },
+      { icon: '\uD83C\uDFC6', label: '25 Fasts Completed', achieved: finished.length >= 25 },
+      { icon: '\uD83D\uDC8E', label: '50 Fasts Completed', achieved: finished.length >= 50 },
+      { icon: '\uD83D\uDE80', label: '100 Fasts Completed', achieved: finished.length >= 100 },
       { icon: '\u23F0', label: '100 Hours Fasted', achieved: totalHours >= 100 },
       { icon: '\u2B50', label: '500 Hours Fasted', achieved: totalHours >= 500 },
       { icon: '\uD83C\uDF1E', label: '1000 Hours Fasted', achieved: totalHours >= 1000 },

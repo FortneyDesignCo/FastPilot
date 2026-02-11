@@ -359,7 +359,7 @@ const Timer = {
   },
 
   updateQuickStats() {
-    const fasts = Storage.getCompletedFasts();
+    const fasts = Storage.getFinishedFasts();
     const streak = Storage.getStreak();
 
     document.getElementById('stat-streak').textContent = streak;
