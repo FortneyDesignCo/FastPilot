@@ -51,6 +51,12 @@ const Timer = {
     document.getElementById('btn-end-fast').addEventListener('click', () => this.endFast());
     document.getElementById('btn-cancel-fast').addEventListener('click', () => this.cancelFast());
 
+    // Retroactive start
+    document.getElementById('btn-retroactive-start').addEventListener('click', () => this.openRetroactiveStart());
+    document.getElementById('close-retroactive-start').addEventListener('click', () => this.closeRetroactiveStart());
+    document.getElementById('retroactive-start-modal').querySelector('.modal-overlay').addEventListener('click', () => this.closeRetroactiveStart());
+    document.getElementById('btn-confirm-retroactive').addEventListener('click', () => this.confirmRetroactiveStart());
+
     // Quick method picker
     document.getElementById('current-method-badge').addEventListener('click', () => this.toggleQuickPicker());
     document.getElementById('close-quick-picker').addEventListener('click', () => this.closeQuickPicker());
@@ -141,6 +147,53 @@ const Timer = {
     const diffEl = document.getElementById('method-info-difficulty');
     diffEl.textContent = method.difficulty;
     diffEl.className = 'method-info-difficulty ' + method.difficulty.toLowerCase();
+  },
+
+  openRetroactiveStart() {
+    if (this.activeFast) return;
+    const now = new Date();
+    const localISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    document.getElementById('retroactive-start-time').value = localISO;
+    document.getElementById('retroactive-start-time').max = localISO;
+    document.getElementById('retroactive-start-modal').classList.remove('hidden');
+  },
+
+  closeRetroactiveStart() {
+    document.getElementById('retroactive-start-modal').classList.add('hidden');
+  },
+
+  confirmRetroactiveStart() {
+    const startStr = document.getElementById('retroactive-start-time').value;
+    if (!startStr) {
+      this.showToast('Please select a start time', 'error');
+      return;
+    }
+
+    const startDate = new Date(startStr);
+    if (startDate > new Date()) {
+      this.showToast('Start time cannot be in the future', 'error');
+      return;
+    }
+
+    const settings = Storage.getSettings();
+    const method = getMethodById(settings.methodId);
+
+    this.activeFast = {
+      methodId: method.id,
+      methodName: method.name,
+      targetHours: method.fastHours,
+      startTime: startDate.toISOString(),
+      endTime: null,
+      status: 'active'
+    };
+
+    Storage.setActiveFast(this.activeFast);
+    this.closeRetroactiveStart();
+    this.updateUI();
+    this.startTicking();
+
+    const elapsed = (new Date() - startDate) / (1000 * 60 * 60);
+    this.showToast(`Fast started ${elapsed.toFixed(1)}h ago!`);
   },
 
   startFast() {
@@ -279,6 +332,7 @@ const Timer = {
     document.getElementById('btn-start-fast').style.display = 'none';
     document.getElementById('btn-end-fast').style.display = '';
     document.getElementById('btn-cancel-fast').style.display = '';
+    document.getElementById('btn-retroactive-start').style.display = 'none';
 
     const method = getMethodById(this.activeFast.methodId);
     document.getElementById('badge-method-name').textContent = method.name;
@@ -289,6 +343,7 @@ const Timer = {
     document.getElementById('btn-start-fast').style.display = '';
     document.getElementById('btn-end-fast').style.display = 'none';
     document.getElementById('btn-cancel-fast').style.display = 'none';
+    document.getElementById('btn-retroactive-start').style.display = '';
     document.getElementById('timer-display').textContent = '00:00:00';
     document.getElementById('timer-state').textContent = 'Ready to fast';
     document.getElementById('timer-state').classList.remove('goal-reached');
