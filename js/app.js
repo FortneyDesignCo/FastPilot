@@ -13,6 +13,7 @@ const App = {
     this.bindNavigation();
     this.bindSettings();
     this.bindManualEntry();
+    this.bindEditFast();
 
     Timer.init();
     Calendar.init();
@@ -222,6 +223,20 @@ const App = {
     });
   },
 
+  // Edit Fast End Time bindings
+  bindEditFast() {
+    const modal = document.getElementById('edit-fast-modal');
+    const closeBtn = document.getElementById('close-edit-fast');
+    const overlay = modal.querySelector('.modal-overlay');
+    const saveBtn = document.getElementById('btn-save-edit-fast');
+
+    closeBtn.addEventListener('click', () => this.closeEditFast());
+    overlay.addEventListener('click', () => this.closeEditFast());
+    saveBtn.addEventListener('click', () => this.saveEditFast());
+
+    document.getElementById('edit-fast-end').addEventListener('input', () => this.updateEditPreview());
+  },
+
   openManualEntry(dateStr) {
     const settings = Storage.getSettings();
     document.getElementById('manual-method').value = settings.methodId;
@@ -323,9 +338,107 @@ const App = {
           </div>
           ${f.notes ? `<div class="history-item-notes">${f.notes}</div>` : ''}
           ${f.manual ? '<span class="manual-badge">Manual</span>' : ''}
+          ${f.endTime ? `<button class="btn btn-ghost btn-tiny edit-end-time-btn" data-id="${f.id}">Adjust End Time</button>` : ''}
         </div>
       `;
     }).join('');
+
+    // Bind edit end time buttons
+    list.querySelectorAll('.edit-end-time-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openEditFast(btn.dataset.id);
+      });
+    });
+  },
+
+  // Edit Fast End Time
+  openEditFast(fastId) {
+    const fasts = Storage.getFasts();
+    const fast = fasts.find(f => f.id === fastId);
+    if (!fast || !fast.endTime) return;
+
+    this._editingFastId = fastId;
+
+    const start = new Date(fast.startTime);
+    const end = new Date(fast.endTime);
+    const toLocal = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+    document.getElementById('edit-fast-start').value = toLocal(start);
+    document.getElementById('edit-fast-end').value = toLocal(end);
+
+    // Set min to start time so end can't be before start
+    document.getElementById('edit-fast-end').min = toLocal(start);
+
+    this.updateEditPreview();
+    document.getElementById('edit-fast-modal').classList.remove('hidden');
+  },
+
+  closeEditFast() {
+    document.getElementById('edit-fast-modal').classList.add('hidden');
+    this._editingFastId = null;
+  },
+
+  updateEditPreview() {
+    const startStr = document.getElementById('edit-fast-start').value;
+    const endStr = document.getElementById('edit-fast-end').value;
+    const preview = document.getElementById('edit-fast-preview');
+
+    if (!startStr || !endStr) {
+      preview.textContent = '';
+      return;
+    }
+
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    const hours = (end - start) / (1000 * 60 * 60);
+
+    if (hours <= 0) {
+      preview.textContent = 'End time must be after start time';
+      preview.className = 'edit-fast-preview error';
+    } else {
+      preview.textContent = `Duration: ${hours.toFixed(1)} hours`;
+      preview.className = 'edit-fast-preview';
+    }
+  },
+
+  saveEditFast() {
+    const fastId = this._editingFastId;
+    if (!fastId) return;
+
+    const endStr = document.getElementById('edit-fast-end').value;
+    if (!endStr) {
+      Timer.showToast('Please set an end time', 'error');
+      return;
+    }
+
+    const fasts = Storage.getFasts();
+    const fast = fasts.find(f => f.id === fastId);
+    if (!fast) return;
+
+    const start = new Date(fast.startTime);
+    const end = new Date(endStr);
+
+    if (end <= start) {
+      Timer.showToast('End time must be after start time', 'error');
+      return;
+    }
+
+    const hours = (end - start) / (1000 * 60 * 60);
+    const targetMet = hours >= fast.targetHours;
+
+    Storage.updateFast(fastId, {
+      endTime: end.toISOString(),
+      actualHours: parseFloat(hours.toFixed(2)),
+      status: targetMet ? 'completed' : 'partial'
+    });
+
+    this.closeEditFast();
+    Timer.showToast('End time updated!', 'success');
+    Timer.updateQuickStats();
+    this.renderHistory();
+    if (typeof Calendar !== 'undefined') Calendar.render();
+    if (typeof Analytics !== 'undefined') Analytics.refresh();
   }
 };
 

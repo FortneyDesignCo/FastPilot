@@ -191,10 +191,21 @@ const Calendar = {
             </div>
             ${f.actualHours ? `<div class="fast-card-duration">${f.actualHours.toFixed(1)} hours fasted</div>` : ''}
             ${f.notes ? `<div class="fast-card-notes">${f.notes}</div>` : ''}
-            <button class="btn btn-ghost btn-tiny delete-fast-btn" data-id="${f.id}">Delete</button>
+            <div class="fast-card-actions">
+              ${f.endTime ? `<button class="btn btn-ghost btn-tiny edit-end-time-btn" data-id="${f.id}">Adjust End Time</button>` : ''}
+              <button class="btn btn-ghost btn-tiny delete-fast-btn" data-id="${f.id}">Delete</button>
+            </div>
           </div>
         `;
       }).join('');
+
+      // Bind edit end time buttons
+      content.querySelectorAll('.edit-end-time-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          App.openEditFast(btn.dataset.id);
+        });
+      });
 
       // Bind delete buttons
       content.querySelectorAll('.delete-fast-btn').forEach(btn => {

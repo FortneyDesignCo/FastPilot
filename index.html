@@ -127,6 +127,7 @@
               <button id="btn-end-fast" class="btn btn-danger btn-large" style="display:none;">End Fast</button>
               <button id="btn-cancel-fast" class="btn btn-ghost" style="display:none;">Cancel</button>
             </div>
+            <button id="btn-retroactive-start" class="btn-link retroactive-link">Started earlier?</button>
 
             <div class="quick-stats">
               <div class="quick-stat">
@@ -382,6 +383,50 @@
             <textarea id="manual-notes" class="text-input" rows="3" placeholder="How did you feel?"></textarea>
           </div>
           <button id="btn-save-manual" class="btn btn-primary">Save Entry</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retroactive Start Modal -->
+    <div id="retroactive-start-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Start Fast Retroactively</h2>
+          <button id="close-retroactive-start" class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-hint">Set the time you actually started fasting. The timer will count from that point.</p>
+          <div class="setting-group">
+            <label>When did you start fasting?</label>
+            <input type="datetime-local" id="retroactive-start-time" class="time-input">
+          </div>
+          <button id="btn-confirm-retroactive" class="btn btn-primary">Start Fast</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Fast Modal -->
+    <div id="edit-fast-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Adjust End Time</h2>
+          <button id="close-edit-fast" class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label>Start Time</label>
+            <input type="datetime-local" id="edit-fast-start" class="time-input" disabled>
+          </div>
+          <div class="setting-group">
+            <label>End Time</label>
+            <input type="datetime-local" id="edit-fast-end" class="time-input">
+          </div>
+          <div class="setting-group">
+            <div class="edit-fast-preview" id="edit-fast-preview"></div>
+          </div>
+          <button id="btn-save-edit-fast" class="btn btn-primary">Save Changes</button>
         </div>
       </div>
     </div>

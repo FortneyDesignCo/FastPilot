@@ -665,6 +665,33 @@ body {
 
 .timer-actions .btn { flex: 1; }
 
+/* Retroactive Start Link */
+.retroactive-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.retroactive-link:hover {
+  color: var(--accent-primary);
+}
+
+.modal-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
 /* Quick Stats */
 .quick-stats {
   display: flex;
@@ -890,6 +917,12 @@ body {
   color: var(--text-muted);
   margin-top: 6px;
   font-style: italic;
+}
+
+.fast-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .no-fasts {
@@ -1310,6 +1343,22 @@ body {
   border-radius: 3px;
   background: rgba(139, 92, 246, 0.2);
   color: #c084fc;
+}
+
+.history-item .edit-end-time-btn {
+  margin-top: 8px;
+}
+
+/* Edit Fast Preview */
+.edit-fast-preview {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  padding: 8px 0;
+}
+
+.edit-fast-preview.error {
+  color: var(--accent-red);
 }
 
 .empty-state {
